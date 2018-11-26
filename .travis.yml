@@ -3,7 +3,5 @@ elixir:
   - '1.7'
 install:
   - echo "Skipping install..."
-before_script:
-  - cd hangman/ && mix deps.get
 script:
-  - cd hangman/ && mix test && cd -
+  - cd hangman/ && mix deps.get && mix test && cd -
