@@ -14,27 +14,27 @@ defmodule Hangman.GameTest do
   test "state isn't changed for :won or :lost games" do
     for state <- [ :won, :lost ] do
       game = Game.new_game() |> Map.put(:state, state)
-      assert { ^game, _ } = Game.make_move(game, "x")
+      assert game = Game.make_move(game, "x")
     end
   end
 
   test "first occurrence of letter is not already used" do
     game = Game.new_game()
-    { game, _tally } = Game.make_move(game, "x")
+    game = Game.make_move(game, "x")
     assert game.state != :already_used
   end
 
   test "second occurrence of letter is not already used" do
     game = Game.new_game()
-    { game, _tally } = Game.make_move(game, "x")
+    game = Game.make_move(game, "x")
     assert game.state != :already_used
-    { game, _tally } = Game.make_move(game, "x")
+    game = Game.make_move(game, "x")
     assert game.state == :already_used
   end
 
   test "a good guess is recognized" do
     game = Game.new_game("wibble")
-    { game, _tally } = Game.make_move(game, "w")
+    game = Game.make_move(game, "w")
     assert game.state == :good_guess
     assert game.turns_left == 7
   end
@@ -42,20 +42,20 @@ defmodule Hangman.GameTest do
   test "a guessed word is a won game" do
     game = Game.new_game("won")
     
-    { game, _tally } = Game.make_move(game, "w")
+    game = Game.make_move(game, "w")
     assert game.state == :good_guess
     assert game.turns_left == 7
-    { game, _tally } = Game.make_move(game, "o")
+    game = Game.make_move(game, "o")
     assert game.state == :good_guess
     assert game.turns_left == 7
-    { game, _tally } = Game.make_move(game, "n")
+    game = Game.make_move(game, "n")
     assert game.state == :won
     assert game.turns_left == 7
   end
 
   test "bad guess is recognized" do
     game = Game.new_game("wit")
-    { game, _tally } = Game.make_move(game, "x")
+    game = Game.make_move(game, "x")
     assert game.state == :bad_guess
     assert game.turns_left == 6
   end
@@ -71,13 +71,26 @@ defmodule Hangman.GameTest do
       {"e", :lost, 0},
     ]
 
-    assert_moves = fn ({ letter, state, turns }, game) ->
-      { game, _tally } = Game.make_move(game, letter)
-      assert game.state == state
-      assert game.turns_left == turns
-      game
-    end
-    
-    Enum.reduce(moves, Game.new_game("wit"), assert_moves)
+    assert_moves(Game.new_game("wit"), moves)
+  end
+
+  test "only accepts a single lowercase character as move" do
+    moves = [
+      {"yr", :invalid_move, 7},
+      {"W", :invalid_move, 7},
+      {"9", :invalid_move, 7},
+    ]
+    assert_moves(Game.new_game("wit"), moves)
+  end
+
+  defp assert_moves(initial_game, moves) do
+    Enum.reduce(moves, initial_game, &assert_state_and_turns(&1, &2))
+  end
+
+  defp assert_state_and_turns({letter, state, turns}, game) do
+    game = Game.make_move(game, letter)
+    assert game.state == state
+    assert game.turns_left == turns
+    game
   end
 end
