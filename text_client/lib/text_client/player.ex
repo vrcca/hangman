@@ -1,11 +1,7 @@
 defmodule TextClient.Player do
 
-  alias TextClient.State
+  alias TextClient.{Mover, State, Summary, Prompter}
 
-  # TODO: good guess
-  # TODO: bad guess
-  # TODO: already used
-  # TODO: initialising
   def play(%State{tally: %{ state: :won }}) do
     exit_with_message("You WON!")
   end
@@ -27,22 +23,10 @@ defmodule TextClient.Player do
 
   defp continue(game) do
     game
-    |> display()
-    |> prompt()
-    |> make_move()
+    |> Summary.display()
+    |> Prompter.accept_move()
+    |> Mover.make_move()
     |> play()
-  end
-
-  defp display(game) do
-    game
-  end
-
-  defp prompt(game) do
-    game
-  end
-
-  defp make_move(game) do
-    game
   end
 
   defp continue_with_message(game, msg) do
