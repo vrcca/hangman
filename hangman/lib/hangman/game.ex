@@ -8,8 +8,7 @@ defmodule Hangman.Game do
   )
   
   def new_game() do
-    Dictionary.start()
-    |> Dictionary.random_word()
+    Dictionary.random_word()
     |> new_game()
   end
   def new_game(word) do
@@ -19,10 +18,12 @@ defmodule Hangman.Game do
   end
 
   def make_move(game = %{state: state}, _guess) when state in [:won, :lost] do
-    game
+    game 
+    |> return_with_tally
   end
   def make_move(game, guess) do
     accept_move(game, guess, MapSet.member?(game.used, guess))
+    |> return_with_tally
   end
 
   def tally(game) do
@@ -37,6 +38,10 @@ defmodule Hangman.Game do
   end
 
   ####################################################
+
+  defp return_with_tally(game) do
+    { game, tally(game) }
+  end
   
   defp accept_move(game, _guess, _already_guessed = true) do
     Map.put(game, :state, :already_used)

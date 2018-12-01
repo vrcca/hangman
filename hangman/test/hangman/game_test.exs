@@ -14,27 +14,27 @@ defmodule Hangman.GameTest do
   test "state isn't changed for :won or :lost games" do
     for state <- [ :won, :lost ] do
       game = Game.new_game() |> Map.put(:state, state)
-      assert game = Game.make_move(game, "x")
+      assert { game, _ } = Game.make_move(game, "x")
     end
   end
 
   test "first occurrence of letter is not already used" do
     game = Game.new_game()
-    game = Game.make_move(game, "x")
+    { game, _ } = Game.make_move(game, "x")
     assert game.state != :already_used
   end
 
   test "second occurrence of letter is not already used" do
     game = Game.new_game()
-    game = Game.make_move(game, "x")
+    { game, _ } = Game.make_move(game, "x")
     assert game.state != :already_used
-    game = Game.make_move(game, "x")
+    { game, _ } = Game.make_move(game, "x")
     assert game.state == :already_used
   end
 
   test "a good guess is recognized" do
     game = Game.new_game("wibble")
-    game = Game.make_move(game, "w")
+    { game, _ } = Game.make_move(game, "w")
     assert game.state == :good_guess
     assert game.turns_left == 7
   end
@@ -42,20 +42,20 @@ defmodule Hangman.GameTest do
   test "a guessed word is a won game" do
     game = Game.new_game("won")
     
-    game = Game.make_move(game, "w")
+    { game, _ } = Game.make_move(game, "w")
     assert game.state == :good_guess
     assert game.turns_left == 7
-    game = Game.make_move(game, "o")
+    { game, _ } = Game.make_move(game, "o")
     assert game.state == :good_guess
     assert game.turns_left == 7
-    game = Game.make_move(game, "n")
+    { game, _ } = Game.make_move(game, "n")
     assert game.state == :won
     assert game.turns_left == 7
   end
 
   test "bad guess is recognized" do
     game = Game.new_game("wit")
-    game = Game.make_move(game, "x")
+    { game, _ } = Game.make_move(game, "x")
     assert game.state == :bad_guess
     assert game.turns_left == 6
   end
@@ -88,7 +88,7 @@ defmodule Hangman.GameTest do
   end
 
   defp assert_state_and_turns({letter, state, turns}, game) do
-    game = Game.make_move(game, letter)
+    { game, _ } = Game.make_move(game, letter)
     assert game.state == state
     assert game.turns_left == turns
     game
