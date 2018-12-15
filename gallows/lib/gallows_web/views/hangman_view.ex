@@ -7,11 +7,24 @@ defmodule GallowsWeb.HangmanView do
     button("New Game", to: Routes.hangman_path(conn, :create_game))
   end
 
-  def word_so_far(tally) do
-    tally.letters.guessed |> Enum.join(" ")
+  def word_so_far(letters) do
+    letters |> Enum.join(" ")
   end
+
+  def used_so_far([]), do: "None"
+  def used_so_far(letters), do: letters |> Enum.join(" ")
 
   def game_over?(%{state: state}) do
     state in [:won, :lost]
+  end
+
+  def turn(left, target) when target >= left do
+    "dim"
+    |> raw()
+  end
+
+  def turn(_left, _target) do
+    "faint"
+    |> raw()
   end
 end
