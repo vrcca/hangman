@@ -1,0 +1,16 @@
+/* This file is for your main application css. */
+
+@import "./phoenix.scss";
+
+
+.game-container {
+    display: grid;
+    width: 800px;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 150px 150px;
+    grid-gap: 1rem;
+}
+
+.hide_component {
+    opacity: 0.1;
+}

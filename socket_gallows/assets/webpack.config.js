@@ -28,14 +28,19 @@ module.exports = (env, options) => ({
           loader: 'babel-loader'
         }
       },
-      {
-        test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader']
-      }
+        {
+            test: /\.scss$/,
+            use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
+        }
     ]
   },
   plugins: [
     new MiniCssExtractPlugin({ filename: '../css/app.css' }),
     new CopyWebpackPlugin([{ from: 'static/', to: '../' }])
-  ]
+  ],
+    resolve: {
+        alias: {
+            'vue$': 'vue/dist/vue.esm.js'
+        }
+    }
 });

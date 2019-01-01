@@ -1,1 +1,15 @@
-Hangman
+<div id="app">
+  <div v-bind:class="'alert alert-' + game_state_class">
+    {{ game_state_message }}
+  </div>
+
+  <div class="game-container">
+    <div class="item item1">
+      <%= render("_gallows.html")  %>    
+    </div>
+    <div class="item item2">
+      <%= render("_status.html")  %>
+    </div>
+  </div>
+</div>
+
